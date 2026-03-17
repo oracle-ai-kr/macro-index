@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#080c12">
+<title>MACRO INDEX</title>
+<style>
+:root {
+  --bg:#080c12; --surface:#0d1420; --surface2:#111a28; --border:#1a2535;
+  --accent:#00d4a0; --red:#ff4060; --yellow:#ffc040;
+  --blue:#4488ff; --orange:#ff8c40; --text:#c0d0e0; --muted:#506070;
+  --mono:'Courier New',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;overflow:hidden;display:flex;flex-direction:column;}
+
+/* ── 설정 오버레이 ── */
+.setup-overlay{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-y:auto;}
+.setup-logo{font-family:var(--mono);font-size:20px;font-weight:900;color:var(--accent);letter-spacing:2px;margin-bottom:4px;}
+.setup-sub{font-size:11px;color:var(--muted);margin-bottom:24px;font-family:var(--mono);letter-spacing:1px;text-align:center;}
+.setup-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;width:100%;max-width:400px;}
+.setup-section-title{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin:16px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.setup-section-title:first-child{margin-top:0;}
+.setup-label{font-size:10px;color:var(--muted);letter-spacing:1px;font-family:var(--mono);margin-bottom:5px;text-transform:uppercase;}
+.setup-input{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:8px;font-size:16px !important;outline:none;width:100%;font-family:var(--mono);margin-bottom:10px;}
+.setup-input:focus{border-color:var(--accent);}
+.setup-btn{background:var(--accent);color:#080c12;border:none;padding:13px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;width:100%;margin-top:6px;font-family:inherit;letter-spacing:1px;}
+.setup-btn:active{filter:brightness(.85);}
+.setup-btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--border);margin-top:8px;font-size:12px;}
+.setup-btn.test{background:var(--surface2);color:var(--accent);border:1px solid var(--accent);margin-top:0;margin-bottom:10px;font-size:12px;padding:9px;}
+.setup-warn{font-size:11px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.6;}
+.setup-status{font-family:var(--mono);font-size:11px;text-align:center;margin-top:8px;min-height:16px;padding:4px 8px;border-radius:6px;}
+.setup-status.ok{color:var(--accent);}
+.setup-status.err{color:var(--red);}
+.setup-note{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--muted);line-height:1.7;margin-bottom:10px;}
+.setup-note strong{color:var(--accent);}
+
+/* ── 헤더 ── */
+.app-header{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px 0;flex-shrink:0;z-index:10;}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.app-title{display:flex;align-items:center;gap:8px;}
+.title-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.title-text{font-family:var(--mono);font-size:14px;font-weight:700;letter-spacing:1px;}
+.header-right{display:flex;align-items:center;gap:8px;}
+.clock{font-family:var(--mono);font-size:11px;color:var(--muted);}
+.phase-badge{font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:4px;}
+.phase-badge.bull{background:rgba(0,212,160,.15);color:var(--accent);border:1px solid var(--accent);}
+.phase-badge.bear{background:rgba(255,64,96,.15);color:var(--red);border:1px solid var(--red);}
+.phase-badge.neut{background:rgba(255,192,64,.12);color:var(--yellow);border:1px solid var(--yellow);}
+.phase-badge.none{background:rgba(80,96,112,.12);color:var(--muted);border:1px solid var(--border);}
+
+/* ── 탭 ── */
+.tabs{display:flex;}
+.tab{flex:1;text-align:center;padding:8px 0;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* ── 컨텐츠 ── */
+.content{flex:1;overflow-y:auto;overflow-x:hidden;padding:14px;padding-bottom:max(24px,env(safe-area-inset-bottom,24px));-webkit-overflow-scrolling:touch;}
+.page{display:none;}.page.active{display:block;}
+
+/* ── 카드 ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;}
+.card-label{font-size:10px;color:var(--muted);letter-spacing:2px;font-family:var(--mono);margin-bottom:10px;text-transform:uppercase;}
+
+/* ── 버튼 ── */
+.btn{background:var(--accent);color:#080c12;border:none;padding:12px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;width:100%;transition:all .15s;font-family:inherit;}
+.btn:active{filter:brightness(.85);}
+.btn:disabled{background:var(--muted);cursor:not-allowed;color:var(--bg);}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--border);}
+.btn.sm{padding:7px 12px;font-size:12px;width:auto;}
+
+/* ── 토스트 ── */
+.toast{position:fixed;bottom:max(60px,calc(60px + env(safe-area-inset-bottom,0px)));left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 16px;border-radius:100px;font-size:12px;font-family:var(--mono);opacity:0;transition:all .25s;pointer-events:none;z-index:10000;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── 게이지 ── */
+.gauge-wrap{margin:10px 0;}
+.gauge-track{height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.gauge-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.4,0,.2,1);}
+.gauge-labels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:3px;}
+
+/* ── 큰 점수 ── */
+.big-score{text-align:center;padding:14px 0 8px;}
+.big-score-num{font-family:var(--mono);font-size:52px;font-weight:900;line-height:1;}
+.big-score-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+.big-score-grade{display:inline-block;padding:4px 14px;border-radius:100px;font-family:var(--mono);font-size:12px;font-weight:700;margin-top:6px;}
+
+/* ── 빠른 지수 그리드 ── */
+.idx-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.idx-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px;cursor:pointer;transition:border-color .15s;position:relative;}
+.idx-card:active{opacity:.8;}
+.idx-sym{font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:3px;}
+.idx-name{font-size:10px;color:var(--muted);margin-bottom:5px;}
+.idx-price{font-family:var(--mono);font-size:15px;font-weight:700;}
+.idx-ch{font-family:var(--mono);font-size:11px;margin-top:2px;}
+.idx-ch.up{color:var(--accent);}
+.idx-ch.dn{color:var(--red);}
+.idx-ch.flat{color:var(--muted);}
+.idx-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:6px;}
+.idx-bar-fill{height:100%;border-radius:2px;}
+.idx-src{position:absolute;top:8px;right:8px;font-family:var(--mono);font-size:8px;color:var(--muted);background:var(--surface2);padding:1px 4px;border-radius:3px;}
+.idx-loading{opacity:.4;}
+
+/* ── 지표 분석 리스트 ── */
+.ind-list{list-style:none;}
+.ind-item{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);}
+.ind-item:last-child{border-bottom:none;}
+.ind-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.ind-dot.bull{background:var(--accent);}
+.ind-dot.bear{background:var(--red);}
+.ind-dot.neut{background:var(--yellow);}
+.ind-body{flex:1;}
+.ind-label{font-size:12px;font-weight:500;}
+.ind-val{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:1px;}
+.ind-reason{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5;}
+.ind-score{font-family:var(--mono);font-size:12px;font-weight:700;min-width:30px;text-align:right;margin-top:2px;}
+
+/* ── 카테고리 점수 ── */
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+.cat-item{background:var(--surface2);border-radius:8px;padding:10px;border:1px solid var(--border);}
+.cat-label{font-size:10px;color:var(--muted);margin-bottom:4px;}
+.cat-bar-bg{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:4px;}
+.cat-bar{height:100%;border-radius:2px;}
+.cat-val{font-family:var(--mono);font-size:14px;font-weight:700;}
+
+/* ── 접기/펴기 ── */
+.coll-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;padding:2px 0;}
+.coll-header:active{opacity:.7;}
+.coll-icon{font-family:var(--mono);font-size:11px;color:var(--muted);transition:transform .2s;}
+.coll-icon.open{transform:rotate(180deg);}
+.coll-body{overflow:hidden;transition:max-height .3s cubic-bezier(.4,0,.2,1);max-height:4000px;}
+.coll-body.closed{max-height:0;}
+
+/* ── 판정 박스 ── */
+.verdict{border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid;}
+.verdict.bull{background:rgba(0,212,160,.07);border-color:var(--accent);}
+.verdict.bear{background:rgba(255,64,96,.07);border-color:var(--red);}
+.verdict.neut{background:rgba(255,192,64,.07);border-color:var(--yellow);}
+.verdict-title{font-size:17px;font-weight:900;margin-bottom:5px;}
+.verdict.bull .verdict-title{color:var(--accent);}
+.verdict.bear .verdict-title{color:var(--red);}
+.verdict.neut .verdict-title{color:var(--yellow);}
+.verdict-sub{font-size:12px;color:var(--muted);line-height:1.6;}
+.verdict-rows{margin-top:10px;}
+.verdict-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.verdict-row:last-child{border-bottom:none;}
+.vr-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.vr-dot.bull{background:var(--accent);}
+.vr-dot.bear{background:var(--red);}
+.vr-dot.neut{background:var(--yellow);}
+.vr-score{font-family:var(--mono);font-size:11px;margin-left:auto;}
+
+/* ── 알림 박스 ── */
+.alert-box{border-radius:8px;padding:10px 12px;margin:8px 0;font-size:12px;line-height:1.6;}
+.alert-box.warn{background:rgba(255,192,64,.08);border:1px solid var(--yellow);color:var(--yellow);}
+.alert-box.ok{background:rgba(0,212,160,.06);border:1px solid var(--accent);color:var(--accent);}
+.alert-box.info{background:rgba(80,96,112,.08);border:1px solid var(--border);color:var(--muted);}
+.alert-box.danger{background:rgba(255,64,96,.08);border:1px solid var(--red);color:var(--red);}
+
+/* ── 메트릭 그리드 ── */
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+.metric-item{background:var(--surface2);border-radius:8px;padding:10px;border:1px solid var(--border);}
+.metric-label{font-size:10px;color:var(--muted);margin-bottom:4px;}
+.metric-val{font-family:var(--mono);font-size:14px;font-weight:700;}
+
+/* ── 소스 배지 ── */
+.src-tag{font-family:var(--mono);font-size:9px;padding:2px 5px;border-radius:3px;background:var(--surface2);border:1px solid var(--border);color:var(--muted);margin-left:4px;}
+.src-tag.binance{border-color:rgba(255,192,64,.4);color:var(--yellow);}
+.src-tag.coingecko{border-color:rgba(0,212,160,.4);color:var(--accent);}
+.src-tag.upbit{border-color:rgba(68,136,255,.4);color:var(--blue);}
+.src-tag.yahoo{border-color:rgba(80,96,112,.4);color:var(--muted);}
+.src-tag.kis{border-color:rgba(255,140,64,.4);color:var(--orange);}
+
+/* ── 김치 프리미엄 ── */
+.kimchi-box{border-radius:10px;padding:12px;border:1px solid;}
+.kimchi-box.premium{background:rgba(255,64,96,.07);border-color:var(--red);}
+.kimchi-box.discount{background:rgba(0,212,160,.07);border-color:var(--accent);}
+.kimchi-box.normal{background:rgba(80,96,112,.07);border-color:var(--border);}
+.kimchi-pct{font-family:var(--mono);font-size:28px;font-weight:900;}
+
+/* ── 섹션 타이틀 ── */
+.sec-title{font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--muted);margin:16px 0 8px;text-transform:uppercase;}
+
+/* ── 상태 텍스트 ── */
+.status-txt{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:6px;min-height:16px;}
+
+/* ── 스피너 ── */
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── TF 탭 ── */
+.tf-tabs{display:flex;gap:4px;}
+.tf-tab{background:var(--surface2);border:1px solid var(--border);color:var(--muted);padding:5px 10px;font-family:var(--mono);font-size:11px;border-radius:6px;cursor:pointer;transition:all .2s;}
+
+/* 주식 — 파랑 */
+.tf-tabs.equity .tf-tab.active{background:rgba(68,136,255,.15);border-color:var(--blue);color:var(--blue);}
+.tf-tabs.equity .tf-tab:not(.active):hover{border-color:rgba(68,136,255,.4);color:rgba(68,136,255,.7);}
+
+/* 매크로 — 골드 */
+.tf-tabs.macro .tf-tab.active{background:rgba(255,192,64,.12);border-color:var(--yellow);color:var(--yellow);}
+.tf-tabs.macro .tf-tab:not(.active):hover{border-color:rgba(255,192,64,.4);color:rgba(255,192,64,.7);}
+
+/* 코인 — 그린 (기존 accent 유지) */
+.tf-tabs.crypto .tf-tab.active{background:rgba(0,212,160,.12);border-color:var(--accent);color:var(--accent);}
+.tf-tabs.crypto .tf-tab:not(.active):hover{border-color:rgba(0,212,160,.4);color:rgba(0,212,160,.7);}
+
+/* 모바일 */
+input,select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:8px;font-size:16px !important;outline:none;width:100%;font-family:inherit;}
+input:focus{border-color:var(--accent);}
+@media(max-width:390px){.big-score-num{font-size:44px;}}
+</style>
+</head>
+<body>
+
+<!-- ══════════ 키 안내 팝업 ══════════ -->
+<div id="keyGuideModal" style="display:none;position:fixed;inset:0;background:rgba(8,12,18,.92);z-index:9998;align-items:center;justify-content:center;padding:24px;">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;width:100%;max-width:380px;max-height:90vh;overflow-y:auto;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--red)">⚠️ 키 입력 오류</div>
+      <button onclick="closeKeyGuide()" style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;">닫기</button>
+    </div>
+    <div id="keyGuideContent"></div>
+  </div>
+</div>
+
+<!-- ══════════ 설정 오버레이 ══════════ -->
+<div class="setup-overlay" id="setupOverlay">
+  <div class="setup-logo">📊 MACRO INDEX</div>
+  <div class="setup-sub">종합 시장 지수 분석기</div>
+  <div class="setup-card">
+
+    <div class="setup-note">
+      <strong>무료·키 없이 바로 사용 가능</strong><br>
+      바이낸스, CoinGecko, 업비트, Yahoo Finance는<br>키 없이 동작합니다. 아래는 선택 사항입니다.
+    </div>
+
+    <div class="setup-section-title">한국투자증권 API (국내주식 실시간, 선택)</div>
+    <div class="setup-label">앱키 (App Key)</div>
+    <input class="setup-input" id="kisAppKey" type="password" placeholder="한투 앱키 (없으면 Yahoo 자동 사용)" autocomplete="off"/>
+    <div class="setup-label">앱 시크릿 (App Secret)</div>
+    <input class="setup-input" id="kisAppSecret" type="password" placeholder="한투 앱 시크릿" autocomplete="off"/>
+    <button class="setup-btn test" onclick="testKIS()">🔌 한투 연결 테스트</button>
+    <div class="setup-status" id="setupStatus"></div>
+
+    <button class="setup-btn" onclick="saveSetup()">저장하고 시작</button>
+    <button class="setup-btn ghost" onclick="skipSetup()">키 없이 시작 (권장)</button>
+
+    <div class="setup-warn">
+      🔒 키는 이 기기 localStorage에만 저장됩니다<br>
+      한투 API: <span style="color:var(--accent)">apiportal.koreainvestment.com</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── 헤더 ── -->
+<header class="app-header">
+  <div class="header-top">
+    <div class="app-title">
+      <div class="title-dot"></div>
+      <span class="title-text">MACRO INDEX</span>
+    </div>
+    <div class="header-right">
+      <span id="phaseBadge" class="phase-badge none">--</span>
+      <span class="clock" id="clock">--:--:--</span>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('overview')">개요</div>
+    <div class="tab" onclick="showTab('equity')">주식</div>
+    <div class="tab" onclick="showTab('macro')">매크로</div>
+    <div class="tab" onclick="showTab('crypto')">코인</div>
+    <div class="tab" onclick="showTab('settings')">설정</div>
+  </div>
+</header>
+
+<div class="content">
+
+  <!-- ══════════ 개요 탭 ══════════ -->
+  <div class="page active" id="page-overview">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <div class="card-label" style="margin-bottom:0">종합 시장 평가지수</div>
+        <button class="btn sm" onclick="runAll()" id="btnRunAll">전체 분석</button>
+      </div>
+      <div class="status-txt" id="overviewStatus">전체 분석 버튼을 눌러 시작하세요</div>
+      <div id="overviewScoreWrap" style="display:none">
+        <div class="big-score">
+          <div class="big-score-num" id="overviewNum" style="color:var(--accent)">--</div>
+          <div class="big-score-sub">/ 100 · 종합 시장 평가점수</div>
+          <div class="big-score-grade" id="overviewGrade">--</div>
+        </div>
+        <div class="gauge-wrap">
+          <div class="gauge-track"><div class="gauge-fill" id="overviewGauge" style="width:0%"></div></div>
+          <div class="gauge-labels"><span style="color:var(--red)">위험</span><span>중립</span><span style="color:var(--accent)">기회</span></div>
+        </div>
+        <div id="overviewVerdict" style="margin-top:10px"></div>
+      </div>
+    </div>
+
+    <div class="card" id="catCard" style="display:none">
+      <div class="card-label">카테고리별 평가</div>
+      <div class="cat-grid" id="catGrid"></div>
+    </div>
+
+    <div class="sec-title">주요 지수 현황</div>
+    <div class="idx-grid" id="quickGrid">
+      <!-- JS로 채움 -->
+    </div>
+  </div>
+
+  <!-- ══════════ 주식 탭 ══════════ -->
+  <div class="page" id="page-equity">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div class="card-label" style="margin-bottom:0">주식시장 분석</div>
+        <div class="tf-tabs equity" id="equityTfTabs">
+          <div class="tf-tab" data-tf="60">60분</div>
+          <div class="tf-tab active" data-tf="D">일</div>
+          <div class="tf-tab" data-tf="W">주</div>
+          <div class="tf-tab" data-tf="M">월</div>
+        </div>
+      </div>
+      <button class="btn" id="btnEquity" onclick="runEquity()">주식시장 분석</button>
+      <div class="status-txt" id="equityStatus"></div>
+    </div>
+    <div id="equityResult"></div>
+  </div>
+
+  <!-- ══════════ 매크로 탭 ══════════ -->
+  <div class="page" id="page-macro">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div class="card-label" style="margin-bottom:0">매크로 환경</div>
+        <div class="tf-tabs macro" id="macroTfTabs">
+          <div class="tf-tab active" data-tf="D">일</div>
+          <div class="tf-tab" data-tf="W">주</div>
+          <div class="tf-tab" data-tf="M">월</div>
+        </div>
+      </div>
+      <button class="btn" id="btnMacro" onclick="runMacro()">매크로 분석</button>
+      <div class="status-txt" id="macroStatus"></div>
+    </div>
+    <div id="macroResult"></div>
+  </div>
+
+  <!-- ══════════ 코인 탭 ══════════ -->
+  <div class="page" id="page-crypto">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div class="card-label" style="margin-bottom:0">암호화폐 시장</div>
+        <div class="tf-tabs crypto" id="cryptoTfTabs">
+          <div class="tf-tab" data-tf="1h">1시간</div>
+          <div class="tf-tab" data-tf="4h">4시간</div>
+          <div class="tf-tab active" data-tf="1d">일</div>
+          <div class="tf-tab" data-tf="1w">주</div>
+        </div>
+      </div>
+      <button class="btn" id="btnCrypto" onclick="runCrypto()">코인시장 분석</button>
+      <div class="status-txt" id="cryptoStatus"></div>
+    </div>
+    <div id="cryptoResult"></div>
+  </div>
+
+  <!-- ══════════ 설정 탭 ══════════ -->
+  <div class="page" id="page-settings">
+    <div class="card">
+      <div class="card-label">한국투자증권 API <span style="font-family:var(--mono);font-size:9px;color:var(--muted)">(국내지수 실시간, 선택)</span></div>
+      <div style="font-size:11px;margin-bottom:10px;" id="kisConnStatus">--</div>
+      <div id="kisEnvNotice" style="display:none;margin-bottom:10px;"></div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">앱키</div>
+      <input id="sAppKey" type="password" placeholder="앱키" style="margin-bottom:8px;"/>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">앱 시크릿</div>
+      <input id="sAppSecret" type="password" placeholder="앱 시크릿" style="margin-bottom:12px;"/>
+      <button class="btn" style="margin-bottom:8px;" onclick="saveSettingsKeys()">저장</button>
+      <button class="btn ghost" onclick="testKISSettings()">연결 테스트</button>
+      <div id="settingsTestStatus" style="font-family:var(--mono);font-size:11px;text-align:center;margin-top:8px;min-height:16px;"></div>
+    </div>
+    <div class="card">
+      <div class="card-label">데이터 소스 현황</div>
+      <ul class="ind-list" style="margin-top:4px">
+        <li class="ind-item"><span class="ind-dot bull"></span><div class="ind-body"><div class="ind-label">바이낸스 <span class="src-tag binance">BINANCE</span></div><div class="ind-reason">코인 OHLCV · 무료 · 키 불필요 · CORS 허용</div></div></li>
+        <li class="ind-item"><span class="ind-dot bull"></span><div class="ind-body"><div class="ind-label">CoinGecko <span class="src-tag coingecko">GECKO</span></div><div class="ind-reason">BTC 도미넌스 실제값 · 무료 · 키 불필요</div></div></li>
+        <li class="ind-item"><span class="ind-dot bull"></span><div class="ind-body"><div class="ind-label">업비트 <span class="src-tag upbit">UPBIT</span></div><div class="ind-reason">KRW 시세 · 김치 프리미엄 계산 · 무료</div></div></li>
+        <li class="ind-item"><span class="ind-dot bull"></span><div class="ind-body"><div class="ind-label">Yahoo Finance <span class="src-tag yahoo">YAHOO</span></div><div class="ind-reason">해외지수·원자재·환율·금리 · 무료</div></div></li>
+        <li class="ind-item"><span class="ind-dot neut"></span><div class="ind-body"><div class="ind-label">한투 API <span class="src-tag kis">KIS</span></div><div class="ind-reason">국내주식 실시간 · 키 필요 · 미입력 시 Yahoo 사용</div></div></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-label">캐시 초기화</div>
+      <button class="btn ghost" onclick="clearCache()">전체 캐시 초기화</button>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════ JavaScript ══════════════ -->
+<script>
+'use strict';
+
+// ── localStorage 래퍼 ────────────────────────────────────
+const _mem={};
+let _lsOk=false;
+try{localStorage.setItem('__t__','1');localStorage.removeItem('__t__');_lsOk=true;}catch(_){}
+const Store={
+  get(k){if(_lsOk){try{const v=localStorage.getItem(k);if(v!==null)return v;}catch(_){}}return _mem[k]??null;},
+  set(k,v){_mem[k]=v;if(_lsOk){try{localStorage.setItem(k,v);}catch(_){}}},
+  remove(k){delete _mem[k];if(_lsOk){try{localStorage.removeItem(k);}catch(_){}}},
+};
+
+// ── 유틸 ────────────────────────────────────────────────
+const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const fmtN=(n,d=2)=>isFinite(n)?n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}):'--';
+const fmtPct=n=>!isFinite(n)?'--':(n>=0?'+':'')+n.toFixed(2)+'%';
+const chClass=n=>n>0?'up':n<0?'dn':'flat';
+
+function toast(msg,ms=1800){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),ms);
+}
+function vibrate(){try{if(navigator.vibrate)navigator.vibrate(40);}catch(_){}}
+
+// ── 시계 ────────────────────────────────────────────────
+function tickClock(){
+  const d=new Date();
+  document.getElementById('clock').textContent=
+    [d.getHours(),d.getMinutes(),d.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':');
+}
+tickClock();setInterval(tickClock,1000);
+
+// ── 탭 ──────────────────────────────────────────────────
+function showTab(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+name)?.classList.add('active');
+  const tabs=['overview','equity','macro','crypto','settings'];
+  const idx=tabs.indexOf(name);
+  if(idx>=0)document.querySelectorAll('.tab')[idx]?.classList.add('active');
+  if(name==='settings')refreshSettingsStatus();
+}
+
+// ── TF 탭 초기화 ─────────────────────────────────────────
+function initTfTabs(containerId, onChange){
+  const wrap=document.getElementById(containerId);
+  if(!wrap)return;
+  wrap.querySelectorAll('.tf-tab').forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      wrap.querySelectorAll('.tf-tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      onChange(tab.dataset.tf);
+    });
+  });
+}
+
+// ── 상태 ────────────────────────────────────────────────
+const STATE={
+  equityTf:'D', macroTf:'D', cryptoTf:'1d',
+  kisToken:null, kisTokenExp:0,
+};
+initTfTabs('equityTfTabs', v=>STATE.equityTf=v);
+initTfTabs('macroTfTabs',  v=>STATE.macroTf=v);
+initTfTabs('cryptoTfTabs', v=>STATE.cryptoTf=v);
+
+// ════════════════════════════════════════════════════════
+// DATA SOURCES
+// ════════════════════════════════════════════════════════
+
+// ── CORS 프록시 체인 ─────────────────────────────────────
+// GitHub Pages(https): 직접 호출 1차 → 프록시 fallback
+// content:// 로컬: 프록시 1차
+const IS_HTTPS=location.protocol==='https:';
+const YF_PROXIES=IS_HTTPS?[
+  u=>u,
+  u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
+  u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+]:[
+  u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
+  u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  u=>u,
+];
+// 주식: 60분/일/주/월 / 매크로: 일/주/월 / 코인: 바이낸스 직접
+const YF_INT={'60':'60m','D':'1d','W':'1wk','M':'1mo'};
+const YF_RNG={'60':'120d','D':'2y','W':'5y','M':'10y'};
+const BN_TF_MAP={'1h':'1h','4h':'4h','1d':'1d','1w':'1w'};
+const BN_LIMIT={'1h':200,'4h':200,'1d':200,'1w':150};
+
+async function fetchYF(ticker,tf='D',count=200){
+  const url=`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?interval=${YF_INT[tf]||'1d'}&range=${YF_RNG[tf]||'2y'}`;
+  let raw=null;
+  for(const p of YF_PROXIES){
+    try{
+      const ctrl=new AbortController(),t=setTimeout(()=>ctrl.abort(),15000);
+      const res=await fetch(p(url),{signal:ctrl.signal,cache:'no-store'});
+      clearTimeout(t);if(!res.ok)continue;
+      const text=await res.text();
+      try{raw=JSON.parse(text);}catch(_){try{raw=JSON.parse(JSON.parse(text).contents);}catch(_){continue;}}
+      if(raw?.chart?.result?.[0]?.timestamp)break;raw=null;
+    }catch(_){}
+  }
+  if(!raw?.chart?.result?.[0])throw new Error(`${ticker} 데이터 없음`);
+  const r=raw.chart.result[0];
+  const ts=r.timestamp||[];
+  const q=r.indicators?.quote?.[0]||{};
+  const rows=ts.map((t,i)=>({
+    t:t*1000,o:q.open?.[i]||q.close?.[i]||0,
+    h:q.high?.[i]||q.close?.[i]||0,
+    l:q.low?.[i]||q.close?.[i]||0,
+    c:q.close?.[i]||0,v:q.volume?.[i]||0,
+  })).filter(r=>r.c>0);
+  if(rows.length<20)throw new Error('캔들 부족');
+  return rows.slice(-count);
+}
+
+async function fetchYFQuote(ticker){
+  const rows=await fetchYF(ticker,'D',5);
+  const price=rows[rows.length-1].c;
+  const prev=rows[rows.length-2]?.c||price;
+  return{price,change1d:((price-prev)/prev)*100,source:'YAHOO'};
+}
+
+// ── 바이낸스 ─────────────────────────────────────────────
+// CORS 허용, 키 불필요
+async function fetchBinanceCandles(symbol,tf='1d',limit=200){
+  const interval=BN_TF_MAP[tf]||'1d';
+  const lim=BN_LIMIT[tf]||limit;
+  const url=`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${lim}`;
+  const res=await fetch(url,{cache:'no-store'});
+  if(!res.ok)throw new Error(`Binance ${res.status}`);
+  const data=await res.json();
+  return data.map(k=>({
+    t:k[0],o:parseFloat(k[1]),h:parseFloat(k[2]),
+    l:parseFloat(k[3]),c:parseFloat(k[4]),v:parseFloat(k[5]),
+  }));
+}
+async function fetchBinanceQuote(symbol){
+  const url=`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`;
+  const res=await fetch(url,{cache:'no-store'});
+  if(!res.ok)throw new Error(`Binance ticker ${res.status}`);
+  const d=await res.json();
+  return{price:parseFloat(d.lastPrice),change1d:parseFloat(d.priceChangePercent),source:'BINANCE'};
+}
+
+// ── CoinGecko ────────────────────────────────────────────
+// BTC 도미넌스 실제값
+async function fetchDominance(){
+  const url='https://api.coingecko.com/api/v3/global';
+  const res=await fetch(url,{cache:'no-store'});
+  if(!res.ok)throw new Error(`CoinGecko ${res.status}`);
+  const d=await res.json();
+  const btcDom=d.data?.market_cap_percentage?.btc||0;
+  const ethDom=d.data?.market_cap_percentage?.eth||0;
+  const totalMcap=d.data?.total_market_cap?.usd||0;
+  return{btcDom,ethDom,totalMcap,source:'COINGECKO'};
+}
+// CoinGecko OHLC (일봉 fallback)
+async function fetchGeckoOHLC(coinId='bitcoin',days=90){
+  const url=`https://api.coingecko.com/api/v3/coins/${coinId}/ohlc?vs_currency=usd&days=${days}`;
+  const res=await fetch(url,{cache:'no-store'});
+  if(!res.ok)throw new Error(`CoinGecko OHLC ${res.status}`);
+  const data=await res.json();
+  return data.map(d=>({t:d[0],o:d[1],h:d[2],l:d[3],c:d[4],v:0}));
+}
+
+// ── 업비트 ───────────────────────────────────────────────
+// KRW 시세, 김치 프리미엄용
+const UB_PROXIES=[
+  u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
+  u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  u=>u,
+];
+async function fetchUpbitTicker(market='KRW-BTC'){
+  const url=`https://api.upbit.com/v1/ticker?markets=${market}`;
+  for(const p of UB_PROXIES){
+    try{
+      const res=await fetch(p(url),{cache:'no-store'});
+      if(!res.ok)continue;
+      const text=await res.text();
+      let data;
+      try{data=JSON.parse(text);}catch(_){try{data=JSON.parse(JSON.parse(text).contents);}catch(_){continue;}}
+      if(!Array.isArray(data)||!data[0])continue;
+      return{price:data[0].trade_price,change1d:data[0].signed_change_rate*100,source:'UPBIT'};
+    }catch(_){}
+  }
+  throw new Error('업비트 조회 실패');
+}
+
+// ── 한투 API ─────────────────────────────────────────────
+const KIS_BASE='https://openapi.koreainvestment.com:9443';
+async function getKisToken(){
+  if(STATE.kisToken&&Date.now()<STATE.kisTokenExp)return STATE.kisToken;
+  const appKey=Store.get('KIS_APP_KEY');
+  const appSecret=Store.get('KIS_APP_SECRET');
+  if(!appKey||!appSecret)throw new Error('한투 키 없음');
+  const res=await fetch(`${KIS_BASE}/oauth2/tokenP`,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({grant_type:'client_credentials',appkey:appKey,appsecret:appSecret}),
+  });
+  if(!res.ok)throw new Error(`한투 토큰 발급 실패 ${res.status}`);
+  const d=await res.json();
+  STATE.kisToken=d.access_token;
+  STATE.kisTokenExp=Date.now()+(d.expires_in||86400)*1000-60000;
+  return STATE.kisToken;
+}
+
+// ── 한투 API — 지수 일봉 캔들 ──────────────────────────
+// fid_input_iscd: 코스피=0001, 코스닥=1001
+const KIS_INDEX={'^KS11':'0001','^KQ11':'1001'};
+const TF_KIS={'D':'D','W':'W','M':'M'};
+
+// ════════════════════════════════════════════════════════
+// 빠른 현황판
+// ════════════════════════════════════════════════════════
+const QUICK_LIST=[
+  {id:'kospi',   name:'코스피',    sym:'^KS11',   unit:'pt', dec:2, group:'equity'},
+  {id:'kosdaq',  name:'코스닥',    sym:'^KQ11',   unit:'pt', dec:2, group:'equity'},
+  {id:'sp500',   name:'S&P 500',   sym:'^GSPC',   unit:'pt', dec:2, group:'equity'},
+  {id:'nasdaq',  name:'나스닥',    sym:'^IXIC',   unit:'pt', dec:2, group:'equity'},
+  {id:'dji',     name:'다우존스',   sym:'^DJI',    unit:'pt', dec:2, group:'equity'},
+  {id:'dxy',     name:'달러인덱스', sym:'DX-Y.NYB',unit:'',  dec:3, group:'macro'},
+  {id:'gold',    name:'금(XAU/USD)',sym:'GC=F',    unit:'$',  dec:2, group:'macro'},
+  {id:'silver',  name:'은(XAG/USD)',sym:'SI=F',    unit:'$',  dec:3, group:'macro'},
+  {id:'tnx',     name:'미국10년금리',sym:'^TNX',   unit:'%',  dec:3, group:'macro'},
+  {id:'usdkrw',  name:'달러/원',   sym:'USDKRW=X',unit:'₩', dec:2, group:'macro'},
+  {id:'btc',     name:'비트코인',   sym:'BTCUSDT', unit:'$',  dec:0, group:'crypto', binance:true},
+  {id:'dom',     name:'BTC 도미넌스',sym:'dom',    unit:'%',  dec:2, group:'crypto', isdom:true},
+];
+
+function buildQuickGrid(){
+  const grid=document.getElementById('quickGrid');
+  if(!grid)return;
+  grid.innerHTML=QUICK_LIST.map(t=>`
+    <div class="idx-card idx-loading" id="qc-${t.id}" onclick="openQuickDetail('${t.id}')">
+      <div class="idx-sym">${t.id.toUpperCase()}</div>
+      <div class="idx-name">${t.name}</div>
+      <div class="idx-price" style="color:var(--muted)">--</div>
+      <div class="idx-ch flat">--</div>
+      <div class="idx-bar"><div class="idx-bar-fill" style="width:50%;background:var(--border)"></div></div>
+    </div>`).join('');
+}
+
+async function loadQuickCard(t){
+  const card=document.getElementById(`qc-${t.id}`);
+  if(!card)return;
+  try{
+    let price,ch,src;
+    if(t.isdom){
+      const dom=await fetchDominance();
+      price=dom.btcDom;ch=0;src='GECKO';
+    } else if(t.binance){
+      const q=await fetchBinanceQuote(t.sym);
+      price=q.price;ch=q.change1d;src='BINANCE';
+    } else {
+      const q=await fetchYFQuote(t.sym);
+      price=q.price;ch=q.change1d;src='YAHOO';
+    }
+    const barPct=clamp(50+ch*4,5,95);
+    const barColor=ch>=0?'var(--accent)':'var(--red)';
+    const dec=t.dec??2;
+    const priceStr=t.isdom?`${price.toFixed(2)}%`:(t.unit+fmtN(price,dec));
+    card.classList.remove('idx-loading');
+    card.innerHTML=`
+      <span class="idx-src ${src.toLowerCase()}">${src}</span>
+      <div class="idx-sym">${t.id.toUpperCase()}</div>
+      <div class="idx-name">${t.name}</div>
+      <div class="idx-price">${priceStr}</div>
+      <div class="idx-ch ${chClass(ch)}">${t.isdom?'도미넌스':fmtPct(ch)}</div>
+      <div class="idx-bar"><div class="idx-bar-fill" style="width:${barPct}%;background:${barColor}"></div></div>`;
+  }catch(e){
+    card.classList.remove('idx-loading');
+    card.innerHTML=`
+      <div class="idx-sym">${t.id.toUpperCase()}</div>
+      <div class="idx-name">${t.name}</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:4px">오류</div>`;
+  }
+}
+
+async function loadAllQuick(){
+  buildQuickGrid();
+  for(let i=0;i<QUICK_LIST.length;i+=3){
+    await Promise.allSettled(QUICK_LIST.slice(i,i+3).map(t=>loadQuickCard(t)));
+    await sleep(100);
+  }
+}
+
+function openQuickDetail(id){
+  const t=QUICK_LIST.find(x=>x.id===id);
+  if(!t)return;
+  // 해당 탭으로 이동
+  if(t.group==='equity')showTab('equity');
+  else if(t.group==='macro')showTab('macro');
+  else if(t.group==='crypto')showTab('crypto');
+}
+
+// ════════════════════════════════════════════════════════
+// INDICATORS ENGINE (gold_signal 계승)
+// ════════════════════════════════════════════════════════
+const U={
+  clamp:(v,lo,hi)=>Math.max(lo,Math.min(hi,v)),
+  ema(arr,p){const k=2/(p+1);let prev=arr[0];return arr.map((v,i)=>i===0?prev:(prev=v*k+prev*(1-k)));},
+  sma(arr,p){const out=new Array(arr.length).fill(null);for(let i=p-1;i<arr.length;i++){let s=0;for(let j=i-p+1;j<=i;j++)s+=arr[j];out[i]=s/p;}return out;},
+  rma(arr,p){const out=[];let s=arr.slice(0,p).reduce((a,b)=>a+b,0)/p;out.push(s);for(let i=p;i<arr.length;i++){s=(s*(p-1)+arr[i])/p;out.push(s);}return out;},
+};
+
+function calcRSI(closes,p=14){
+  let g=0,l=0;
+  for(let i=1;i<=p;i++){const d=closes[i]-closes[i-1];if(d>=0)g+=d;else l-=d;}
+  g/=p;l/=p;
+  const out=new Array(closes.length).fill(null);
+  out[p]=100-100/(1+(l===0?1e9:g/l));
+  for(let i=p+1;i<closes.length;i++){
+    const d=closes[i]-closes[i-1];
+    g=(g*(p-1)+Math.max(d,0))/p;l=(l*(p-1)+Math.max(-d,0))/p;
+    out[i]=100-100/(1+(l===0?1e9:g/l));
+  }
+  return out;
+}
+function calcMACD(closes,f=12,s=26,sig=9){
+  const ef=U.ema(closes,f),es=U.ema(closes,s);
+  const line=ef.map((v,i)=>v-es[i]);
+  const signal=U.ema(line,sig);
+  const hist=line.map((v,i)=>v-signal[i]);
+  return{line,signal,hist};
+}
+function calcBB(closes,p=20,m=2){
+  if(closes.length<p)return{mid:closes[closes.length-1],upper:0,lower:0,bw:0,pos:0.5};
+  const sl=closes.slice(-p),mean=sl.reduce((a,b)=>a+b)/p;
+  const std=Math.sqrt(sl.reduce((a,b)=>a+(b-mean)**2,0)/p);
+  const upper=mean+m*std,lower=mean-m*std;
+  const price=closes[closes.length-1];
+  const pos=upper>lower?(price-lower)/(upper-lower):0.5;
+  return{mid:mean,upper,lower,std,bw:(m*2*std)/mean*100,pos};
+}
+function calcBBSqueeze(closes){
+  const b=calcBB(closes);
+  const p=Math.min(20,closes.length);
+  const sl=closes.slice(-p);
+  const mid=sl.reduce((a,v)=>a+v,0)/p;
+  const range=sl.reduce((a,v)=>a+Math.abs(v-mid),0)/p;
+  return b.upper<mid+range*1.5&&b.lower>mid-range*1.5;
+}
+function calcADX(rows,p=14){
+  const tr=[],pdm=[],mdm=[];
+  for(let i=1;i<rows.length;i++){
+    const c=rows[i],pv=rows[i-1];
+    tr.push(Math.max(c.h-c.l,Math.abs(c.h-pv.c),Math.abs(c.l-pv.c)));
+    const up=c.h-pv.h,dn=pv.l-c.l;
+    pdm.push(up>dn&&up>0?up:0);mdm.push(dn>up&&dn>0?dn:0);
+  }
+  const aTR=U.ema(tr,p),aPDM=U.ema(pdm,p),aMDM=U.ema(mdm,p);
+  const dxArr=[];
+  for(let i=0;i<aTR.length;i++){
+    const st=aTR[i];if(!st)continue;
+    const pdi=(aPDM[i]/st)*100,mdi=(aMDM[i]/st)*100,sum=pdi+mdi;
+    dxArr.push({dx:sum?Math.abs(pdi-mdi)/sum*100:0,pdi,mdi});
+  }
+  const dxVals=dxArr.map(d=>d.dx),adxArr=U.sma(dxVals,p),last=dxArr.length-1;
+  return{adx:adxArr[last]??0,pdi:dxArr[last]?.pdi??0,mdi:dxArr[last]?.mdi??0};
+}
+function calcStoch(rows,kp=14,dp=3){
+  const kArr=[];
+  for(let i=kp-1;i<rows.length;i++){
+    const sl=rows.slice(i-kp+1,i+1);
+    const hh=Math.max(...sl.map(r=>r.h)),ll=Math.min(...sl.map(r=>r.l));
+    kArr.push(hh===ll?50:((rows[i].c-ll)/(hh-ll))*100);
+  }
+  let dSum=0;for(let i=kArr.length-dp;i<kArr.length;i++)dSum+=kArr[i];
+  return{k:kArr[kArr.length-1],d:dSum/dp};
+}
+function calcOBV(rows){
+  let v=0;const arr=[];
+  for(let i=0;i<rows.length;i++){
+    if(i===0){arr.push(0);continue;}
+    if(rows[i].c>rows[i-1].c)v+=rows[i].v;
+    else if(rows[i].c<rows[i-1].c)v-=rows[i].v;
+    arr.push(v);
+  }
+  const sig=U.ema(arr,20);
+  return{val:arr[arr.length-1],sig:sig[sig.length-1]};
+}
+function calcATR(rows,p=14){
+  const tr=[];
+  for(let i=1;i<rows.length;i++){
+    const c=rows[i],pv=rows[i-1];
+    tr.push(Math.max(c.h-c.l,Math.abs(c.h-pv.c),Math.abs(c.l-pv.c)));
+  }
+  const atr=U.rma(tr,p);
+  const val=atr[atr.length-1];
+  const price=rows[rows.length-1].c;
+  return{val,pct:price?val/price*100:0};
+}
+function calcMA(closes){
+  if(closes.length<60)return{bullish:false,bearish:false,mixed:true,ma5:0,ma20:0,ma60:0};
+  const avg=n=>closes.slice(-n).reduce((a,b)=>a+b,0)/n;
+  const ma5=avg(5),ma20=avg(20),ma60=avg(60);
+  return{bullish:ma5>ma20&&ma20>ma60,bearish:ma5<ma20&&ma20<ma60,mixed:!(ma5>ma20&&ma20>ma60)&&!(ma5<ma20&&ma20<ma60),ma5,ma20,ma60};
+}
+function calcTrend(closes){
+  const n=Math.min(20,closes.length),sl=closes.slice(-n);
+  const first=sl[0],last=sl[sl.length-1];
+  const pct=((last-first)/first)*100;
+  let sumX=0,sumY=0,sumXY=0,sumX2=0;
+  for(let i=0;i<n;i++){sumX+=i;sumY+=sl[i];sumXY+=i*sl[i];sumX2+=i*i;}
+  const slope=(n*sumXY-sumX*sumY)/(n*sumX2-sumX*sumX);
+  return{pct,slope:(slope/(first||1))*100};
+}
+function calcSwing(rows,lb=60){
+  const sub=rows.slice(Math.max(0,rows.length-lb));
+  const H=[],L=[];
+  for(let i=2;i<sub.length-2;i++){
+    if(sub[i].h>sub[i-1].h&&sub[i].h>sub[i-2].h&&sub[i].h>sub[i+1].h&&sub[i].h>sub[i+2].h)H.push(sub[i].h);
+    if(sub[i].l<sub[i-1].l&&sub[i].l<sub[i-2].l&&sub[i].l<sub[i+1].l&&sub[i].l<sub[i+2].l)L.push(sub[i].l);
+  }
+  if(H.length<2||L.length<2)return{trend:'unknown',score:0,label:'구조 분석 불가'};
+  const hh=H[H.length-1]>H[H.length-2],hl=L[L.length-1]>L[L.length-2];
+  const lh=H[H.length-1]<H[H.length-2],ll=L[L.length-1]<L[L.length-2];
+  if(hh&&hl)return{trend:'uptrend',score:15,label:'상승 추세 구조 (HH+HL)'};
+  if(lh&&ll)return{trend:'downtrend',score:-15,label:'하락 추세 구조 (LH+LL)'};
+  if(hh)return{trend:'weakup',score:5,label:'약한 상승 구조'};
+  if(ll)return{trend:'weakdown',score:-5,label:'약한 하락 구조'};
+  if(lh&&hl)return{trend:'wedge',score:0,label:'쐐기형 수렴 ⚡'};
+  return{trend:'sideways',score:0,label:'횡보 구조'};
+}
+function calcRSIDiv(closes,rsiArr,lb=20){
+  const last=closes.length-1,prev=Math.max(0,last-lb);
+  const rNow=rsiArr[last]??50,rOld=rsiArr[prev]??50;
+  if(rNow>40&&rNow<60)return 'none';
+  if(Math.abs((closes[last]-closes[prev])/closes[prev]*100)<1)return 'none';
+  const pUp=closes[last]>closes[prev],rUp=rNow>rOld;
+  if(pUp&&!rUp&&rNow>60)return 'bearish';
+  if(!pUp&&rUp&&rNow<40)return 'bullish';
+  return 'none';
+}
+
+// ── 종합 지표 계산 ───────────────────────────────────────
+function calcAll(rows){
+  const closes=rows.map(r=>r.c),last=closes.length-1,price=closes[last];
+  const rsiArr=calcRSI(closes),rsiVal=rsiArr[last]??50;
+  const macd=calcMACD(closes),macdHist=macd.hist[last],macdPrev=macd.hist[last-1]??0;
+  const bb=calcBB(closes),bbSq=calcBBSqueeze(closes);
+  const adx=calcADX(rows),stoch=calcStoch(rows),obv=calcOBV(rows);
+  const atr=calcATR(rows),ma=calcMA(closes);
+  const{pct:trendPct,slope:trendSlope}=calcTrend(closes);
+  const swing=calcSwing(rows);
+  const rsiDiv=calcRSIDiv(closes,rsiArr);
+  const yr=rows.slice(-Math.min(252,rows.length));
+  const hi52=Math.max(...yr.map(r=>r.h)),lo52=Math.min(...yr.map(r=>r.l));
+  const pos52=hi52>lo52?(price-lo52)/(hi52-lo52):0.5;
+  return{price,rsiVal,rsiArr,rsiDiv,macdHist,macdPrev,bb,bbSq,adx,stoch,obv,atr,ma,trendPct,trendSlope,swing,pos52,hi52,lo52};
+}
+
+// ── 점수 산정 ────────────────────────────────────────────
+function scoreIndex(ind){
+  const sigs=[];let base=50;
+  const add=(cat,type,label,val,score,reason)=>{
+    base+=score;
+    sigs.push({cat,type,label,val,score,reason});
+  };
+  const{rsiVal,macdHist,macdPrev,bb,bbSq,adx,stoch,obv,ma,trendPct,trendSlope,swing,pos52,rsiDiv,atr,price}=ind;
+
+  // 1. 추세 ±20
+  const tS=clamp(trendPct*3.5+trendSlope*12,-20,20);
+  const tType=tS>0?'bull':tS<0?'bear':'neut';
+  add('추세',tType,`추세 ${trendPct>=0?'+':''}${trendPct.toFixed(1)}%`,`기울기 ${trendSlope.toFixed(3)}`,Math.round(tS),
+    trendPct>3&&trendSlope>0?`최근 20캔들 +${trendPct.toFixed(1)}% 상승, 기울기 양수. 강한 상승 모멘텀.`:
+    trendPct>1?`소폭 상승 +${trendPct.toFixed(1)}%. 약한 상승 압력.`:
+    trendPct<-3&&trendSlope<0?`최근 ${trendPct.toFixed(1)}% 하락, 기울기 음수. 하락 추세 지속.`:
+    trendPct<-1?`소폭 하락 ${trendPct.toFixed(1)}%. 약한 하락 압력.`:
+    `${trendPct.toFixed(1)}% 변화. 방향성 불명확.`);
+
+  // 2. RSI ±18
+  const rS=clamp(-(rsiVal-50)*0.55,-18,18);
+  const rType=rS>0?'bull':rS<0?'bear':'neut';
+  add('모멘텀',rType,`RSI ${rsiVal.toFixed(1)}`,rsiVal.toFixed(1),Math.round(rS),
+    rsiVal<30?`RSI ${rsiVal.toFixed(1)} 과매도(<30). 단기 반등 확률 높음. 단, 추세 하락 중 30 이하 지속 가능.`:
+    rsiVal<45?`RSI ${rsiVal.toFixed(1)} 중립 하단. 매도 압력 소폭 우세.`:
+    rsiVal>70?`RSI ${rsiVal.toFixed(1)} 과매수(>70). 단기 조정 경계. 상승 추세 중 70+ 유지 가능.`:
+    rsiVal>55?`RSI ${rsiVal.toFixed(1)} 중립 상단. 매수 압력 소폭 우세.`:
+    `RSI ${rsiVal.toFixed(1)} 중립 구간 (45~55).`);
+
+  // 3. MACD ±15
+  const mS=clamp(Math.tanh(macdHist/(price*0.002||1))*15,-15,15);
+  const mType=mS>0?'bull':mS<0?'bear':'neut';
+  add('모멘텀',mType,
+    macdHist>0&&macdPrev<=0?'MACD 골든크로스':macdHist<0&&macdPrev>=0?'MACD 데드크로스':
+    macdHist>0?'MACD 양전':'MACD 음전',
+    macdHist>0?`+${macdHist.toFixed(4)}`:macdHist.toFixed(4),Math.round(mS),
+    macdHist>0&&macdPrev<=0?'히스토그램 음→양 전환. 12EMA가 26EMA 상향 돌파. 단기 반전 신호.':
+    macdHist<0&&macdPrev>=0?'히스토그램 양→음 전환. 단기 하락 전환 신호.':
+    macdHist>0&&macdHist>macdPrev?'MACD 양전 & 히스토그램 확대. 상승 모멘텀 강화.':
+    macdHist>0?'MACD 양전이나 히스토그램 축소. 상승 모멘텀 약화 주의.':
+    macdHist<0&&macdHist<macdPrev?'MACD 음전 확대. 하락 압력 증가.':'MACD 음전이나 히스토그램 축소. 하락 둔화 가능성.');
+
+  // 4. BB ±12
+  const bS=clamp((0.5-bb.pos)*24+(bbSq?4:0),-12,12);
+  const bType=bS>0?'bull':bS<0?'bear':'neut';
+  add('변동성',bType,
+    bb.pos<=0.1?'BB 하단 이탈':bb.pos>=0.9?'BB 상단 이탈':bbSq?'BB 스퀴즈 ⚡':'BB 중간권',
+    `위치 ${(bb.pos*100).toFixed(0)}% BW:${bb.bw.toFixed(1)}%`,Math.round(bS),
+    bb.pos<=0.1?`가격이 BB 하단(${bb.lower.toFixed(2)}) 이탈. 극단적 과매도. 밴드 내 회귀 경향.`:
+    bb.pos>=0.9?`가격이 BB 상단(${bb.upper.toFixed(2)}) 이탈. 과매수 상태.`:
+    bbSq?`밴드폭 ${bb.bw.toFixed(1)}% 협소(스퀴즈). 에너지 압축. 방향성 이탈 임박.`:
+    `BB 내 ${(bb.pos*100).toFixed(0)}% 위치. 정상 범위.`);
+
+  // 5. ADX ±10
+  const aS=adx.pdi>adx.mdi?clamp(adx.adx*0.15,0,10):-clamp(adx.adx*0.15,0,10);
+  const aType=aS>0?'bull':aS<0?'bear':'neut';
+  add('추세강도',aType,`ADX ${adx.adx.toFixed(1)}`,`+DI ${adx.pdi.toFixed(1)} -DI ${adx.mdi.toFixed(1)}`,Math.round(aS),
+    adx.adx<20?`ADX ${adx.adx.toFixed(1)} — 25 미만, 추세 없음. 지표 신뢰도 낮음.`:
+    adx.adx>=40?`ADX ${adx.adx.toFixed(1)} — 매우 강한 추세. ${adx.pdi>adx.mdi?'상승':'하락'} 방향.`:
+    `ADX ${adx.adx.toFixed(1)} — 추세 형성 중. ${adx.pdi>adx.mdi?'상승 우세':'하락 우세'}.`);
+
+  // 6. Stoch ±8
+  const sS=clamp((50-stoch.k)*0.13,-8,8);
+  const sType=sS>0?'bull':sS<0?'bear':'neut';
+  add('모멘텀',sType,`Stoch %K ${stoch.k.toFixed(1)}`,`%D ${stoch.d.toFixed(1)}`,Math.round(sS),
+    stoch.k<20?`%K ${stoch.k.toFixed(1)} 과매도. 14일 기준 저점 근접.`:
+    stoch.k>80?`%K ${stoch.k.toFixed(1)} 과매수. 14일 기준 고점 근접.`:
+    `%K ${stoch.k.toFixed(1)}, %D ${stoch.d.toFixed(1)}.`);
+
+  // 7. OBV ±8
+  const oS=obv.val>obv.sig?8:obv.val<obv.sig?-8:0;
+  const oType=oS>0?'bull':oS<0?'bear':'neut';
+  add('거래량',oType,obv.val>obv.sig?'OBV 매수 압력 우세':'OBV 매도 압력 우세',
+    obv.val>obv.sig?'▲ 시그널 상회':'▼ 시그널 하회',oS,
+    obv.val>obv.sig?'OBV가 20일 EMA 위. 거래량 기반 매수 압력 누적.':'OBV가 20일 EMA 아래. 거래량 기반 매도 압력 우세.');
+
+  // 8. MA 배열 ±10
+  const maS=ma.bullish?10:ma.bearish?-10:0;
+  const maType=maS>0?'bull':maS<0?'bear':'neut';
+  add('이동평균',maType,
+    ma.bullish?'MA 정배열 (5>20>60)':ma.bearish?'MA 역배열 (5<20<60)':'MA 혼재',
+    ma.bullish?'정배열':ma.bearish?'역배열':'혼재',maS,
+    ma.bullish?'단·중·장기 모두 상승 방향. 건강한 상승 구조.':
+    ma.bearish?'단·중·장기 모두 하락 방향. 하락 추세 지속 구조.':
+    '이동평균 혼재. 추세 전환 구간일 수 있음.');
+
+  // 9. 스윙 구조 ±15
+  add('시장구조',swing.score>0?'bull':swing.score<0?'bear':'neut',
+    `구조: ${swing.label}`,swing.trend,swing.score,
+    swing.trend==='uptrend'?'HH+HL 패턴. 매수자가 지속적으로 더 높은 가격에 진입.':
+    swing.trend==='downtrend'?'LH+LL 패턴. 매도 압력이 매수 압력을 일관되게 초과.':
+    swing.trend==='wedge'?'고점 하락+저점 상승 쐐기형. 방향성 이탈 임박.':
+    `현재 추세 구조: ${swing.label}.`);
+
+  // 10. 52주 위치 ±5
+  const p52S=clamp((0.5-ind.pos52)*8,-5,5);
+  add('가격위치',p52S>0?'bull':p52S<0?'bear':'neut',
+    `52주 ${(ind.pos52*100).toFixed(0)}% 위치`,`고 ${fmtN(ind.hi52,0)} 저 ${fmtN(ind.lo52,0)}`,Math.round(p52S),
+    ind.pos52<0.2?`52주 저점 근방(${(ind.pos52*100).toFixed(0)}%). 역사적 저평가 가능성.`:
+    ind.pos52>0.8?`52주 고점 근방(${(ind.pos52*100).toFixed(0)}%). 고점 저항권.`:
+    `52주 범위 내 ${(ind.pos52*100).toFixed(0)}% 위치.`);
+
+  // RSI 다이버전스 보너스
+  if(rsiDiv==='bullish'){base+=5;sigs.push({cat:'다이버전스',type:'bull',label:'RSI 상승 다이버전스',val:'bullish',score:5,reason:'가격 하락인데 RSI 상승. 하락 모멘텀 약화, 반전 가능성.'});}
+  if(rsiDiv==='bearish'){base-=5;sigs.push({cat:'다이버전스',type:'bear',label:'RSI 하락 다이버전스',val:'bearish',score:-5,reason:'가격 상승인데 RSI 하락. 상승 모멘텀 약화, 고점 가능성.'});}
+
+  return{score:Math.round(clamp(base,0,100)),sigs};
+}
+
+// ── 점수 → 등급 ──────────────────────────────────────────
+function gradeOf(score){
+  if(score>=75)return{grade:'매우 강세',cls:'bull',color:'var(--accent)'};
+  if(score>=62)return{grade:'강세',     cls:'bull',color:'var(--accent)'};
+  if(score>=55)return{grade:'약강세',   cls:'bull',color:'#66ddbb'};
+  if(score>=45)return{grade:'중립',     cls:'neut',color:'var(--yellow)'};
+  if(score>=38)return{grade:'약약세',   cls:'bear',color:'#ff8080'};
+  if(score>=25)return{grade:'약세',     cls:'bear',color:'var(--red)'};
+  return             {grade:'매우 약세',cls:'bear',color:'var(--red)'};
+}
+
+// ── 지수 분석 렌더 ────────────────────────────────────────
+function renderAnalysis(name,unit,dec,rows,tf,src){
+  const ind=calcAll(rows);
+  const{score,sigs}=scoreIndex(ind);
+  const g=gradeOf(score);
+  const price=ind.price;
+  const srcTag=`<span class="src-tag ${(src||'yahoo').toLowerCase()}">${src||'YAHOO'}</span>`;
+
+  let html=`
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-bottom:2px">${name} ${srcTag}</div>
+          <div style="font-family:var(--mono);font-size:22px;font-weight:900">${unit}${fmtN(price,dec)}</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:4px">
+            52W ↑ <span style="color:var(--red)">${unit}${fmtN(ind.hi52,dec)}</span>
+            &nbsp;↓ <span style="color:var(--accent)">${unit}${fmtN(ind.lo52,dec)}</span>
+            &nbsp;· ATR ${ind.atr.pct.toFixed(2)}%
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:var(--mono);font-size:36px;font-weight:900;color:${g.color}">${score}</div>
+          <div style="font-size:10px;color:var(--muted)">/ 100</div>
+          <div style="font-family:var(--mono);font-size:11px;color:${g.color};margin-top:2px">${g.grade}</div>
+        </div>
+      </div>
+      <div class="gauge-wrap">
+        <div class="gauge-track"><div class="gauge-fill" style="width:${score}%;background:${g.color}"></div></div>
+        <div class="gauge-labels"><span style="color:var(--red)">약세</span><span>중립</span><span style="color:var(--accent)">강세</span></div>
+      </div>
+      ${ind.bbSq?`<div class="alert-box warn">⚡ BB 스퀴즈 발생 — 큰 방향성 이탈 임박. 돌파 방향 확인 필요.</div>`:''}
+      ${ind.atr.pct>4?`<div class="alert-box danger">⚠️ ATR ${ind.atr.pct.toFixed(2)}% — 변동성 매우 높음.</div>`:''}
+    </div>
+    <div class="card">
+      <div class="coll-header" onclick="toggleColl(this)">
+        <div class="card-label" style="margin-bottom:0">지표별 점수 (${sigs.length}개)</div>
+        <span class="coll-icon open">▼</span>
+      </div>
+      <div class="coll-body">
+        <ul class="ind-list" style="margin-top:8px">`;
+
+  for(const s of sigs){
+    const sc=s.score||0;
+    const scColor=sc>0?'var(--accent)':sc<0?'var(--red)':'var(--yellow)';
+    html+=`
+          <li class="ind-item">
+            <span class="ind-dot ${s.type}"></span>
+            <div class="ind-body">
+              <div class="ind-label" style="display:flex;justify-content:space-between">
+                <span>${s.label}</span>
+                <span class="ind-score" style="color:${scColor}">${sc>0?'+':''}${sc}</span>
+              </div>
+              <div class="ind-val">${s.cat} · ${s.val}</div>
+              <div class="ind-reason">${s.reason}</div>
+            </div>
+          </li>`;
+  }
+  html+=`</ul></div></div>`;
+  return{html,score,g};
+}
+
+// ── 카테고리 종합 판정 렌더 ──────────────────────────────
+function renderVerdict(title,avg,g,rows,summary){
+  const rowsHtml=rows.map(r=>`
+    <div class="verdict-row">
+      <span class="vr-dot ${r.score>=55?'bull':r.score>=45?'neut':'bear'}"></span>
+      <span>${r.name}</span>
+      <span class="vr-score" style="color:${gradeOf(r.score).color}">${r.score}점 · ${gradeOf(r.score).grade}</span>
+    </div>`).join('');
+  return`
+    <div class="verdict ${g.cls}">
+      <div class="verdict-title">${title} · ${avg}점</div>
+      <div class="verdict-sub">${summary}</div>
+      <div class="verdict-rows">${rowsHtml}</div>
+    </div>`;
+}
+
+// ════════════════════════════════════════════════════════
+// 주식 분석
+// ════════════════════════════════════════════════════════
+async function runEquity(){
+  const btn=document.getElementById('btnEquity');
+  const st=document.getElementById('equityStatus');
+  const res=document.getElementById('equityResult');
+  btn.disabled=true;btn.textContent='분석 중...';res.innerHTML='';
+
+  const LIST=[
+    {sym:'^KS11', name:'코스피',  unit:'pt',dec:2,kis:true},
+    {sym:'^KQ11', name:'코스닥',  unit:'pt',dec:2,kis:true},
+    {sym:'^GSPC', name:'S&P 500', unit:'pt',dec:2},
+    {sym:'^IXIC', name:'나스닥',  unit:'pt',dec:2},
+    {sym:'^DJI',  name:'다우존스',unit:'pt',dec:2},
+    {sym:'^VIX',  name:'VIX 공포지수',unit:'',dec:2,vix:true},
+  ];
+
+  let html='';const scores=[];
+  for(const item of LIST){
+    try{
+      st.innerHTML=`<span class="spinner"></span>${item.name} 수집 중...`;
+      let rows,src='YAHOO';
+      // 한투 API 시도 (국내 지수 + 키 있을 때 + https 환경)
+      if(item.kis && Store.get('KIS_APP_KEY') && IS_HTTPS){
+        try{
+          rows=await fetchKISIndexCandles(item.sym, STATE.equityTf, 200);
+          src='KIS';
+        }catch(e){
+          console.warn(`한투 fallback (${e.message}) → Yahoo`);
+          rows=await fetchYF(item.sym,STATE.equityTf,200);
+          src='YAHOO';
+        }
+      } else {
+        rows=await fetchYF(item.sym,STATE.equityTf,200);
+      }
+      await sleep(200);
+
+      if(item.vix){
+        // VIX는 별도 렌더
+        const price=rows[rows.length-1].c;
+        const prev=rows[rows.length-2]?.c||price;
+        const ch=((price-prev)/prev)*100;
+        const vLevel=price>=30?'극단적 공포':price>=20?'공포':price>=15?'불안':'안정';
+        const vColor=price>=30?'var(--red)':price>=20?'var(--orange)':price>=15?'var(--yellow)':'var(--accent)';
+        html+=`
+          <div class="sec-title">공포 지수</div>
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font-size:10px;color:var(--muted);font-family:var(--mono)">^VIX <span class="src-tag yahoo">YAHOO</span></div>
+                <div style="font-family:var(--mono);font-size:26px;font-weight:900;color:${vColor}">${price.toFixed(2)}</div>
+                <div class="idx-ch ${chClass(ch)}" style="margin-top:2px">${fmtPct(ch)}</div>
+              </div>
+              <div style="text-align:right">
+                <div style="font-family:var(--mono);font-size:15px;font-weight:700;color:${vColor}">${vLevel}</div>
+                <div style="font-size:10px;color:var(--muted);margin-top:4px">기준: 15/20/30</div>
+              </div>
+            </div>
+            <div class="gauge-wrap">
+              <div class="gauge-track"><div class="gauge-fill" style="width:${Math.min(price/50*100,100)}%;background:${vColor}"></div></div>
+              <div class="gauge-labels"><span style="color:var(--accent)">안정</span><span>불안</span><span style="color:var(--red)">공포</span></div>
+            </div>
+            <div class="alert-box ${price>=30?'danger':price>=20?'warn':'ok'}" style="margin-top:8px">
+              ${price>=30?'⚠️ VIX 30+ 극단적 공포. 기관 강제청산 압력. 역으로 단기 저점 형성 가능성도 있음.':
+                price>=20?'⚠️ VIX 20~30 시장 불안. 변동성 장세.':
+                price>=15?'• VIX 15~20 약간의 불안. 정상 범주.':
+                '✅ VIX 15 미만. 시장 안정. 위험자산 선호 환경.'}
+            </div>
+          </div>`;
+        continue;
+      }
+
+      html+=`<div class="sec-title">${item.name}</div>`;
+      const r=renderAnalysis(item.name,item.unit,item.dec,rows,STATE.equityTf,src);
+      html+=r.html;
+      scores.push({name:item.name,score:r.score});
+    }catch(e){
+      html+=`<div class="card"><div style="color:var(--muted);font-size:12px">${item.name}: 수집 실패 — ${e.message}</div></div>`;
+    }
+  }
+
+  if(scores.length){
+    const avg=Math.round(scores.reduce((a,b)=>a+b.score,0)/scores.length);
+    const g=gradeOf(avg);
+    const summary=avg>=65?'글로벌 주식시장이 전반적으로 강세 구조입니다. 지수들의 과반이 중장기 이동평균 위에 있고 모멘텀이 양호합니다.':
+                  avg>=55?'주식시장이 약한 강세를 보이고 있습니다. 전반적 상승 추세이나 일부 지수에서 과열 신호가 혼재합니다.':
+                  avg>=45?'시장이 방향성을 탐색 중인 혼조세입니다. 지수간 차별화에 주목하세요.':
+                  avg>=35?'약세 신호가 우세합니다. 주요 지지선 유지 여부가 핵심 변수입니다.':
+                  '시장 전반이 하락 압력 하에 있습니다. 리스크 관리에 집중하세요.';
+    html=renderVerdict('글로벌 주식시장 종합',avg,g,scores,summary)+html;
+    updateCat('equity',avg,g);
+  }
+
+  res.innerHTML=html;
+  st.textContent='';
+  btn.disabled=false;btn.textContent='재분석';
+  vibrate();
+}
+
+// ════════════════════════════════════════════════════════
+// 매크로 분석
+// ════════════════════════════════════════════════════════
+async function runMacro(){
+  const btn=document.getElementById('btnMacro');
+  const st=document.getElementById('macroStatus');
+  const res=document.getElementById('macroResult');
+  btn.disabled=true;btn.textContent='분석 중...';res.innerHTML='';
+
+  const LIST=[
+    {sym:'DX-Y.NYB',name:'달러 인덱스(DXY)',   unit:'',  dec:3,invert:true, note:'달러↑ = 위험자산 압박'},
+    {sym:'GC=F',    name:'금 선물(XAU/USD)',    unit:'$', dec:2,invert:false,note:'안전자산. 인플레·위기 시 상승'},
+    {sym:'SI=F',    name:'은 선물(XAG/USD)',    unit:'$', dec:3,invert:false,note:'산업 수요 겸용 귀금속'},
+    {sym:'^TNX',    name:'미국 10년 금리',      unit:'%', dec:3,invert:true, note:'금리↑ = 주식·금 부담'},
+    {sym:'USDKRW=X',name:'달러/원 환율',        unit:'₩', dec:2,invert:true, note:'환율↑ = 외국인 매도 압력'},
+  ];
+
+  let html='';const scores=[];const collected={};
+  for(const item of LIST){
+    try{
+      st.innerHTML=`<span class="spinner"></span>${item.name} 수집 중...`;
+      const rows=await fetchYF(item.sym,STATE.macroTf,200);
+      collected[item.sym]=rows;
+      await sleep(200);
+      html+=`<div class="alert-box info" style="border-radius:8px 8px 0 0;margin-bottom:-2px">${item.note}</div>`;
+      html+=`<div class="sec-title">${item.name}</div>`;
+      const r=renderAnalysis(item.name,item.unit,item.dec,rows,STATE.macroTf,'YAHOO');
+      html+=r.html;
+      const adjScore=item.invert?100-r.score:r.score;
+      scores.push({name:item.name,score:adjScore,raw:r.score,invert:item.invert});
+    }catch(e){
+      html+=`<div class="card"><div style="color:var(--muted);font-size:12px">${item.name}: 수집 실패 — ${e.message}</div></div>`;
+    }
+  }
+
+  // 달러-금 상관관계 분석
+  const dxyRows=collected['DX-Y.NYB'],goldRows=collected['GC=F'];
+  if(dxyRows&&goldRows){
+    const dxyLast=dxyRows[dxyRows.length-1].c,dxyPrev=dxyRows[dxyRows.length-2]?.c||dxyLast;
+    const goldLast=goldRows[goldRows.length-1].c,goldPrev=goldRows[goldRows.length-2]?.c||goldLast;
+    const dxyUp=dxyLast>dxyPrev,goldUp=goldLast>goldPrev;
+    let corrHtml='';
+    if(dxyUp&&goldUp){
+      corrHtml=`<div class="alert-box warn">⚠️ 달러·금 동반 상승 이상 신호: 통상 달러↑=금↓ 역상관 관계가 깨짐. 지정학적 위기, 중앙은행 매입, 달러 신뢰 약화 가능성.</div>`;
+    } else if(!dxyUp&&!goldUp){
+      corrHtml=`<div class="alert-box danger">⚠️ 달러·금 동반 하락: 디플레이션 공포 또는 유동성 수축 국면 가능성.</div>`;
+    } else {
+      corrHtml=`<div class="alert-box ok">✅ 달러-금 역상관 정상 유지: 달러 ${dxyUp?'강세↑':'약세↓'}, 금 ${goldUp?'상승↑':'하락↓'}.</div>`;
+    }
+    html=`<div class="sec-title">상관관계</div>${corrHtml}`+html;
+  }
+
+  if(scores.length){
+    const avg=Math.round(scores.reduce((a,b)=>a+b.score,0)/scores.length);
+    const g=gradeOf(avg);
+    const summary=avg>=65?'매크로 환경이 위험자산에 우호적. 달러 약세·금리 안정 환경으로 글로벌 자금이 위험자산으로 이동하는 경향.':
+                  avg>=55?'매크로 환경이 위험자산에 약간 우호적. 금리·환율 변동성에 주의.':
+                  avg>=45?'매크로 환경 혼조세. 방향성이 불명확한 상황.':
+                  avg>=35?'매크로 환경이 위험자산에 다소 불리. 달러 강세·금리 상승 확인 필요.':
+                  '매크로 환경이 위험자산에 전반적으로 불리. 안전자산 수요 증가 국면.';
+    html=renderVerdict('매크로 환경 종합 (위험자산 기준)',avg,g,scores,summary)+html;
+    updateCat('macro',avg,g);
+  }
+
+  res.innerHTML=html;
+  st.textContent='';
+  btn.disabled=false;btn.textContent='재분석';
+  vibrate();
+}
+
+// ════════════════════════════════════════════════════════
+// 코인 분석
+// ════════════════════════════════════════════════════════
+async function runCrypto(){
+  const btn=document.getElementById('btnCrypto');
+  const st=document.getElementById('cryptoStatus');
+  const res=document.getElementById('cryptoResult');
+  btn.disabled=true;btn.textContent='분석 중...';res.innerHTML='';
+
+  let html='';const scores=[];
+
+  // ── 1. 도미넌스 (CoinGecko 실제값) ──
+  try{
+    st.innerHTML=`<span class="spinner"></span>BTC 도미넌스 수집 중... (CoinGecko)`;
+    const dom=await fetchDominance();
+    const domColor=dom.btcDom>=60?'var(--orange)':dom.btcDom>=50?'var(--yellow)':dom.btcDom>=40?'var(--accent)':'var(--blue)';
+    const domDesc=dom.btcDom>=60?'BTC 강한 독주. 알트코인 시즌 아님.':
+                  dom.btcDom>=50?'BTC 우세. BTC 주도장.':
+                  dom.btcDom>=40?'균형. 알트코인 강세 시작 가능성.':'알트코인 시즌 진행 중.';
+    html+=`
+      <div class="sec-title">BTC 도미넌스 <span class="src-tag coingecko">COINGECKO</span></div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-size:10px;color:var(--muted);font-family:var(--mono)">전체 시총 기준 실제값</div>
+            <div style="font-family:var(--mono);font-size:32px;font-weight:900;color:${domColor}">${dom.btcDom.toFixed(2)}%</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">ETH ${dom.ethDom.toFixed(2)}%</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:11px;color:var(--muted)">전체 시총</div>
+            <div style="font-family:var(--mono);font-size:13px;font-weight:700">${dom.totalMcap>1e12?'$'+(dom.totalMcap/1e12).toFixed(2)+'T':'$'+(dom.totalMcap/1e9).toFixed(0)+'B'}</div>
+          </div>
+        </div>
+        <div class="gauge-wrap">
+          <div class="gauge-track"><div class="gauge-fill" style="width:${dom.btcDom}%;background:${domColor}"></div></div>
+          <div class="gauge-labels"><span style="color:var(--blue)">알트시즌</span><span>균형</span><span style="color:var(--orange)">BTC 독주</span></div>
+        </div>
+        <div class="alert-box info" style="margin-top:8px">${domDesc}</div>
+      </div>`;
+  }catch(e){
+    html+=`<div class="card"><div style="color:var(--muted);font-size:12px">도미넌스 수집 실패: ${e.message}</div></div>`;
+  }
+
+  // ── 2. 김치 프리미엄 (업비트 KRW vs 바이낸스 USDT) ──
+  try{
+    st.innerHTML=`<span class="spinner"></span>김치 프리미엄 계산 중...`;
+    const [binQ, ubQ, usdkrwRows] = await Promise.all([
+      fetchBinanceQuote('BTCUSDT'),
+      fetchUpbitTicker('KRW-BTC'),
+      fetchYF('USDKRW=X','D',5),
+    ]);
+    const usdkrw=usdkrwRows[usdkrwRows.length-1].c;
+    const binKrw=binQ.price*usdkrw;
+    const kimchi=((ubQ.price-binKrw)/binKrw)*100;
+    const kClass=kimchi>3?'premium':kimchi<-1?'discount':'normal';
+    const kColor=kimchi>5?'var(--red)':kimchi>2?'var(--orange)':kimchi<-2?'var(--accent)':'var(--yellow)';
+    html+=`
+      <div class="sec-title">김치 프리미엄</div>
+      <div class="card">
+        <div class="kimchi-box ${kClass}">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-bottom:4px">업비트 KRW vs 바이낸스 USDT×환율</div>
+              <div class="kimchi-pct" style="color:${kColor}">${kimchi>=0?'+':''}${kimchi.toFixed(2)}%</div>
+            </div>
+            <div style="text-align:right;font-size:11px;color:var(--muted)">
+              <div>업비트 <span class="src-tag upbit">UPBIT</span></div>
+              <div style="font-family:var(--mono);font-weight:700">₩${fmtN(ubQ.price,0)}</div>
+              <div style="margin-top:4px">바이낸스 <span class="src-tag binance">BNS</span></div>
+              <div style="font-family:var(--mono);font-weight:700">₩${fmtN(binKrw,0)}</div>
+            </div>
+          </div>
+        </div>
+        <div class="alert-box ${kimchi>5?'danger':kimchi>2?'warn':kimchi<-2?'ok':'info'}" style="margin-top:8px">
+          ${kimchi>5?`⚠️ 김프 ${kimchi.toFixed(2)}% — 높은 프리미엄. 국내 과열, 해외 대비 고평가. 조정 위험.`:
+            kimchi>2?`• 김프 ${kimchi.toFixed(2)}% — 소폭 프리미엄. 국내 수요 우세.`:
+            kimchi<-2?`✅ 역프 ${Math.abs(kimchi).toFixed(2)}% — 역프리미엄. 국내 저평가 또는 외국인 매수 기회.`:
+            `• 김프 ${kimchi.toFixed(2)}% — 정상 범위. 내외 가격 균형.`}
+          <br><span style="font-size:10px;opacity:.8">기준환율: ₩${fmtN(usdkrw,0)}/USD</span>
+        </div>
+      </div>`;
+  }catch(e){
+    html+=`<div class="card"><div style="color:var(--muted);font-size:12px">김치 프리미엄 계산 실패: ${e.message}</div></div>`;
+  }
+
+  // ── 3. BTC 기술적 분석 (바이낸스 1차, CoinGecko 2차) ──
+  const COINS=[
+    {sym:'BTCUSDT',geckoId:'bitcoin', name:'비트코인(BTC)',unit:'$',dec:0},
+    {sym:'ETHUSDT',geckoId:'ethereum',name:'이더리움(ETH)',unit:'$',dec:2},
+  ];
+  for(const coin of COINS){
+    try{
+      st.innerHTML=`<span class="spinner"></span>${coin.name} 수집 중... (바이낸스)`;
+      let rows,src='BINANCE';
+      try{
+        rows=await fetchBinanceCandles(coin.sym,STATE.cryptoTf,200);
+      }catch(e){
+        st.innerHTML=`<span class="spinner"></span>${coin.name} 바이낸스 실패, CoinGecko 시도...`;
+        const days=STATE.cryptoTf==='1h'?7:STATE.cryptoTf==='4h'?30:STATE.cryptoTf==='1d'?90:365;
+        rows=await fetchGeckoOHLC(coin.geckoId,days);
+        src='COINGECKO';
+      }
+      await sleep(200);
+      html+=`<div class="sec-title">${coin.name}</div>`;
+      const r=renderAnalysis(coin.name,coin.unit,coin.dec,rows,STATE.cryptoTf,src);
+      html+=r.html;
+      scores.push({name:coin.name,score:r.score});
+      if(r.score>=70||r.score<=30){
+        html+=`<div class="alert-box ${r.score>=70?'warn':'info'}" style="margin-top:-4px;margin-bottom:10px">
+          ${r.score>=70?`⚠️ ${coin.name} 과열 구간. 코인 특성상 급락 위험 항상 존재.`:`• ${coin.name} 약세 구간. 반등 조건 형성 중인지 확인.`}
+        </div>`;
+      }
+    }catch(e){
+      html+=`<div class="card"><div style="color:var(--muted);font-size:12px">${coin.name}: 수집 실패 — ${e.message}</div></div>`;
+    }
+  }
+
+  // ── 4. 코인 사이클 참고 ──
+  html+=`
+    <div class="sec-title">시장 사이클 참고</div>
+    <div class="card">
+      <div class="card-label">4년 사이클 (참고용)</div>
+      <ul class="ind-list">
+        <li class="ind-item"><span class="ind-dot neut"></span><div class="ind-body"><div class="ind-label">반감기</div><div class="ind-reason">2024년 4월 완료 → 다음 반감기 2028년. 역사적으로 반감기 후 12~18개월이 고점 구간.</div></div></li>
+        <li class="ind-item"><span class="ind-dot neut"></span><div class="ind-body"><div class="ind-label">도미넌스 사이클</div><div class="ind-reason">BTC 도미넌스 60%+ → BTC 주도장. 도미넌스 50% 이하 하락 시 알트코인 시즌 신호.</div></div></li>
+        <li class="ind-item"><span class="ind-dot neut"></span><div class="ind-body"><div class="ind-label">매크로 연동</div><div class="ind-reason">코인은 달러·금리에 민감. 매크로 탭의 DXY·TNX 방향과 함께 판단 권장.</div></div></li>
+      </ul>
+    </div>`;
+
+  if(scores.length){
+    const avg=Math.round(scores.reduce((a,b)=>a+b.score,0)/scores.length);
+    const g=gradeOf(avg);
+    const summary=avg>=65?'코인 시장 전반 강세. BTC·ETH 모두 상승 구조. 단, 코인 특성상 급격한 변동에 항상 대비.':
+                  avg>=55?'코인 시장 약한 강세. 방향성 확인이 중요한 시점.':
+                  avg>=45?'코인 시장 방향성 탐색 중. 지지/저항 구간 움직임을 주시.':
+                  avg>=35?'코인 시장 약세. 달러·금리 영향이 큰 구간.':
+                  '코인 시장 전반 약세. 변동성 극대화 가능성. 리스크 관리 우선.';
+    html=renderVerdict('암호화폐 시장 종합',avg,g,scores,summary)+html;
+    updateCat('crypto',avg,g);
+  }
+
+  res.innerHTML=html;
+  st.textContent='';
+  btn.disabled=false;btn.textContent='재분석';
+  vibrate();
+}
+
+// ════════════════════════════════════════════════════════
+// 개요 탭 점수 집계
+// ════════════════════════════════════════════════════════
+const _catScores={};
+function updateCat(cat,score,g){
+  _catScores[cat]={score,g};
+  const catCard=document.getElementById('catCard');
+  const catGrid=document.getElementById('catGrid');
+  if(!catGrid)return;
+  catCard.style.display='block';
+  const labels={equity:'주식시장',macro:'매크로',crypto:'코인시장'};
+  catGrid.innerHTML=Object.entries(_catScores).map(([k,v])=>`
+    <div class="cat-item">
+      <div class="cat-label">${labels[k]||k}</div>
+      <div class="cat-bar-bg"><div class="cat-bar" style="width:${v.score}%;background:${v.g.color}"></div></div>
+      <div class="cat-val" style="color:${v.g.color}">${v.score} <span style="font-size:11px">${v.g.grade}</span></div>
+    </div>`).join('');
+  updateOverall();
+}
+
+function updateOverall(){
+  const vals=Object.values(_catScores);if(!vals.length)return;
+  const w={equity:0.4,macro:0.35,crypto:0.25};
+  let wSum=0,tW=0;
+  for(const[k,v]of Object.entries(_catScores)){wSum+=v.score*(w[k]||0.33);tW+=(w[k]||0.33);}
+  const overall=Math.round(wSum/tW);
+  const g=gradeOf(overall);
+
+  document.getElementById('overviewScoreWrap').style.display='block';
+  document.getElementById('overviewNum').textContent=overall;
+  document.getElementById('overviewNum').style.color=g.color;
+  document.getElementById('overviewGrade').textContent=g.grade;
+  document.getElementById('overviewGrade').style.cssText=`background:${g.color}22;color:${g.color};display:inline-block;padding:4px 14px;border-radius:100px;font-family:var(--mono);font-size:12px;font-weight:700;margin-top:6px;`;
+  document.getElementById('overviewGauge').style.cssText=`width:${overall}%;background:${g.color};`;
+
+  const badge=document.getElementById('phaseBadge');
+  badge.textContent=g.grade;
+  badge.className=`phase-badge ${g.cls}`;
+
+  const phaseLabel=overall>=65?'강세 국면':overall>=55?'약강세':overall>=45?'중립':overall>=35?'약약세':'약세 국면';
+  const phaseSub=overall>=65?'주식·매크로·코인이 전반적으로 상승 구조. 위험자산 보유 유리. 단, 과열 신호 모니터링 필요.':
+                 overall>=55?'전반적 상승 방향이나 일부 혼조세. 섹터/자산별 차별화에 주목.':
+                 overall>=45?'명확한 방향성 미형성. 무리한 방향 베팅보다 리스크 관리가 중요.':
+                 overall>=35?'전반적 약세 신호 우세. 주요 지지선 이탈 여부가 핵심.':
+                 '시장 전반 하락 압력. 안전자산 비중 점검 및 손실 제한에 집중.';
+
+  const LABELS={equity:'글로벌 주식시장',macro:'매크로 환경',crypto:'암호화폐 시장'};
+  const rowsHtml=Object.entries(_catScores).map(([k,v])=>`
+    <div class="verdict-row">
+      <span class="vr-dot ${v.g.cls}"></span>
+      <span>${LABELS[k]||k}</span>
+      <span class="vr-score" style="color:${v.g.color}">${v.score}점 · ${v.g.grade}</span>
+    </div>`).join('');
+
+  document.getElementById('overviewVerdict').innerHTML=`
+    <div class="verdict ${g.cls}">
+      <div class="verdict-title">${phaseLabel} · 종합 ${overall}점</div>
+      <div class="verdict-sub">${phaseSub}</div>
+      <div class="verdict-rows">${rowsHtml}</div>
+    </div>`;
+  document.getElementById('overviewStatus').textContent='';
+}
+
+// ── 전체 분석 ─────────────────────────────────────────────
+async function runAll(){
+  vibrate();
+  const btn=document.getElementById('btnRunAll');
+  btn.disabled=true;btn.textContent='분석 중...';
+  document.getElementById('overviewStatus').innerHTML='<span class="spinner"></span>전체 분석 시작...';
+  loadAllQuick();
+  try{
+    document.getElementById('overviewStatus').innerHTML='<span class="spinner"></span>주식시장 분석 중...';
+    await runEquity().catch(e=>console.warn(e));
+    document.getElementById('overviewStatus').innerHTML='<span class="spinner"></span>매크로 분석 중...';
+    await runMacro().catch(e=>console.warn(e));
+    document.getElementById('overviewStatus').innerHTML='<span class="spinner"></span>코인시장 분석 중...';
+    await runCrypto().catch(e=>console.warn(e));
+  }catch(e){
+    document.getElementById('overviewStatus').textContent=`오류: ${e.message}`;
+  }
+  btn.disabled=false;btn.textContent='전체 분석';
+}
+
+// ── 접기/펴기 ─────────────────────────────────────────────
+function toggleColl(header){
+  const body=header.nextElementSibling;
+  const icon=header.querySelector('.coll-icon');
+  if(!body)return;
+  const isOpen=!body.classList.contains('closed');
+  body.classList.toggle('closed',isOpen);
+  if(icon)icon.classList.toggle('open',!isOpen);
+}
+
+// ════════════════════════════════════════════════════════
+// 키 안내 팝업
+// ════════════════════════════════════════════════════════
+const KEY_GUIDE={
+  kis:{
+    title:'한국투자증권 API 키가 필요합니다',
+    desc:'국내주식(코스피·코스닥) 실시간 데이터를 사용하려면 한투 API 키가 필요합니다.<br>키 없이도 Yahoo Finance로 자동 대체됩니다.',
+    steps:[
+      '한국투자증권 계좌 개설 (비대면 가능)',
+      '아래 링크 접속 후 로그인',
+      '상단 메뉴 → API 신청 → 앱키 즉시 발급',
+      '모의투자 앱키로 먼저 테스트 가능',
+    ],
+    link:'https://apiportal.koreainvestment.com',
+    linkText:'apiportal.koreainvestment.com',
+    optional:true,
+  },
+};
+
+function showKeyGuide(type){
+  const g=KEY_GUIDE[type];
+  if(!g)return;
+  const modal=document.getElementById('keyGuideModal');
+  const content=document.getElementById('keyGuideContent');
+  content.innerHTML=`
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px">${g.title}</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:12px">${g.desc}</div>
+    ${g.optional?`<div style="background:rgba(0,212,160,.06);border:1px solid var(--accent);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--accent);margin-bottom:12px">
+      ✅ 이 키는 선택사항입니다. 없으면 Yahoo Finance로 자동 대체됩니다.
+    </div>`:''}
+    <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:8px">발급 방법</div>
+    <ol style="padding-left:18px;font-size:12px;color:var(--text);line-height:2">
+      ${g.steps.map(s=>`<li>${s}</li>`).join('')}
+    </ol>
+    <div style="margin-top:14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;">
+      <div style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-bottom:6px">공식 사이트</div>
+      <a href="${g.link}" target="_blank" style="color:var(--accent);font-family:var(--mono);font-size:13px;font-weight:700;text-decoration:none;word-break:break-all">${g.linkText}</a>
+      <div style="font-size:10px;color:var(--muted);margin-top:4px">위 링크를 길게 눌러 브라우저에서 열기</div>
+    </div>`;
+  modal.style.display='flex';
+}
+
+function closeKeyGuide(){
+  document.getElementById('keyGuideModal').style.display='none';
+}
+
+// ════════════════════════════════════════════════════════
+// 설정 함수
+// ════════════════════════════════════════════════════════
+function saveSetup(){
+  const k=document.getElementById('kisAppKey')?.value.trim();
+  const s=document.getElementById('kisAppSecret')?.value.trim();
+  // 둘 중 하나만 입력된 경우 경고
+  if((k&&!s)||(!k&&s)){
+    const st=document.getElementById('setupStatus');
+    st.textContent='앱키와 앱 시크릿을 둘 다 입력하거나, 둘 다 비워두세요.';
+    st.className='setup-status err';
+    return;
+  }
+  if(k&&s){Store.set('KIS_APP_KEY',k);Store.set('KIS_APP_SECRET',s);}
+  document.getElementById('setupOverlay').style.display='none';
+  toast(k?'한투 키 저장 완료. 시작합니다.':'키 없이 시작합니다.');
+  loadAllQuick();
+}
+
+function skipSetup(){
+  document.getElementById('setupOverlay').style.display='none';
+  loadAllQuick();
+}
+
+async function testKIS(){
+  const st=document.getElementById('setupStatus');
+  const k=document.getElementById('kisAppKey')?.value.trim();
+  const s=document.getElementById('kisAppSecret')?.value.trim();
+  if(!k||!s){
+    st.textContent='';st.className='setup-status';
+    showKeyGuide('kis');
+    return;
+  }
+  st.innerHTML='<span class="spinner"></span>테스트 중...';st.className='setup-status';
+  Store.set('KIS_APP_KEY',k);Store.set('KIS_APP_SECRET',s);
+  try{
+    STATE.kisToken=null;
+    await getKisToken();
+    st.textContent='✅ 한투 연결 성공';st.className='setup-status ok';
+  }catch(e){
+    st.textContent=`❌ ${e.message}`;st.className='setup-status err';
+    setTimeout(()=>showKeyGuide('kis'),600);
+  }
+}
+
+function saveSettingsKeys(){
+  const k=document.getElementById('sAppKey')?.value.trim();
+  const s=document.getElementById('sAppSecret')?.value.trim();
+  if((k&&!s)||(!k&&s)){
+    const st=document.getElementById('settingsTestStatus');
+    st.style.color='var(--red)';
+    st.textContent='앱키와 시크릿을 둘 다 입력하거나 둘 다 비워주세요.';
+    return;
+  }
+  if(k)Store.set('KIS_APP_KEY',k);
+  if(s)Store.set('KIS_APP_SECRET',s);
+  toast('저장됨');refreshSettingsStatus();
+}
+
+async function testKISSettings(){
+  const st=document.getElementById('settingsTestStatus');
+  const k=document.getElementById('sAppKey')?.value.trim();
+  const s=document.getElementById('sAppSecret')?.value.trim();
+  if(!k||!s){
+    st.style.color='var(--red)';
+    st.textContent='키를 먼저 입력해주세요.';
+    showKeyGuide('kis');
+    return;
+  }
+  st.style.color='var(--muted)';st.textContent='테스트 중...';
+  try{
+    STATE.kisToken=null;
+    await getKisToken();
+    st.style.color='var(--accent)';st.textContent='✅ 연결 성공';
+  }catch(e){
+    st.style.color='var(--red)';st.textContent=`❌ ${e.message}`;
+    setTimeout(()=>showKeyGuide('kis'),600);
+  }
+}
+
+function refreshSettingsStatus(){
+  const k=Store.get('KIS_APP_KEY');
+  const el=document.getElementById('kisConnStatus');
+  if(el){
+    el.textContent=k?`✅ 앱키 저장됨 (${k.slice(0,8)}...)`:'미연결 — Yahoo Finance 자동 사용';
+    el.style.color=k?'var(--accent)':'var(--muted)';
+  }
+  // 환경 안내
+  const notice=document.getElementById('kisEnvNotice');
+  if(notice){
+    if(!IS_HTTPS){
+      notice.style.display='block';
+      notice.innerHTML=`<div class="alert-box warn">⚠️ 현재 로컬(content://) 환경입니다.<br>한투 API는 <strong>GitHub Pages 배포 후</strong> 정상 동작합니다.<br>지금은 Yahoo Finance로 자동 대체됩니다.</div>`;
+    } else {
+      notice.style.display=k?'none':'block';
+      if(!k) notice.innerHTML=`<div class="alert-box ok">✅ GitHub Pages 환경. 키 입력 시 한투 API 실시간 데이터 사용 가능.</div>`;
+    }
+  }
+  const sak=document.getElementById('sAppKey');
+  const sas=document.getElementById('sAppSecret');
+  if(sak)sak.value=Store.get('KIS_APP_KEY')||'';
+  if(sas)sas.value=Store.get('KIS_APP_SECRET')||'';
+}
+
+function clearCache(){
+  const keys=['MACRO_VISITED','GH_DEPLOY_TOKEN'];
+  // 분석 결과 캐시 키 패턴으로 삭제
+  if(_lsOk){
+    try{
+      Object.keys(localStorage)
+        .filter(k=>k.startsWith('MACRO_')||k.startsWith('GOLD_')||k.startsWith('COIN_'))
+        .forEach(k=>localStorage.removeItem(k));
+    }catch(_){}
+  }
+  Store.remove('MACRO_VISITED');
+  toast('캐시 초기화됨 — 새로고침 시 첫 방문 화면으로 복귀');
+}
+
+// ════════════════════════════════════════════════════════
+// 앱 시작 — 오버레이 없이 바로 시작, 첫 방문만 오버레이
+// ════════════════════════════════════════════════════════
+window.addEventListener('load',()=>{
+  const visited=Store.get('MACRO_VISITED');
+  if(visited){
+    // 재방문: 오버레이 없이 바로 시작
+    document.getElementById('setupOverlay').style.display='none';
+    loadAllQuick();
+  } else {
+    // 첫 방문: 오버레이 표시하되 quick grid는 미리 초기화
+    Store.set('MACRO_VISITED','1');
+    buildQuickGrid(); // 오버레이 뒤에서 grid 구조 미리 준비
+  }
+});
+</script>
+</body>
+</html>
